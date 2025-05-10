@@ -1,0 +1,1 @@
+kubectl apply -f back-deployment.yaml -f back-service.yaml -f mysql-deployment.yaml -f mysql-pvc.yaml -f mysql-service.yaml -f front-deployment.yaml -f front-service.yaml

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: baraaabid33/hackathonnet-backend:v2
+        ports:
+        - containerPort: 9100
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mysql://mysql:3306/pi111?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&maxAllowedPacket=67108864
+        - name: SPRING_DATASOURCE_USERNAME
+          value: root
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: root
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: update
+        - name: SERVER_PORT
+          value: "9100"

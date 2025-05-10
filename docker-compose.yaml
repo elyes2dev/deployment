@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pi111
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - pi-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  backend:
+    image: baraaabid33/hackathonnet-backend:v1
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/pi111?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&maxAllowedPacket=67108864
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+      SERVER_PORT: 9100
+    ports:
+      - "9100:9100"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - pi-network
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+networks:
+  pi-network:
+    driver: bridge
+
+volumes:
+  mysql-data:

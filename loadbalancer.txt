@@ -1,0 +1,27 @@
+# Apply MetalLB manifests
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-native.yaml
+
+# Wait for pods to be ready
+kubectl wait --namespace metallb-system \
+  --for=condition=ready pod \
+  --selector=app=metallb \
+  --timeout=90s
+
+
+
+front-service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  annotations:
+    metallb.universe.tf/address-pool: first-pool  # Reference the IP pool we created
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
