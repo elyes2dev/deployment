@@ -1,0 +1,40 @@
+# Stage 1: Compile and Build Angular codebase
+FROM node:18 AS build
+
+# Set the working directory
+WORKDIR /usr/local/app
+
+# Add the source code
+COPY ./ /usr/local/app/
+
+# Install dependencies
+RUN npm install
+
+# Build Angular app (add --prod if using Angular <15)
+RUN npm run build
+
+
+# Stage 2: Serve app with nginx server
+FROM nginx:latest
+
+# Create the assets directory if it doesn't exist
+RUN mkdir -p /usr/share/nginx/html/assets/
+
+# Copy the Angular build output
+COPY --from=build /usr/local/app/dist/castini-fe /usr/share/nginx/html
+
+# Copy the environment template (will be overridden by entrypoint.sh)
+COPY ./src/assets/env.template.js /usr/share/nginx/html/assets/env.js
+
+# Copy NGINX reverse proxy config
+COPY ./ngnix.conf /etc/nginx/conf.d/.conf
+
+# Copy and enable the startup script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Run the entrypoint which injects env vars into env.js
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Expose port 80
+EXPOSE 80

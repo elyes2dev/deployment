@@ -1,0 +1,181 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: castini-frontend
+  namespace: castini
+  labels:
+    app: castini-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: castini-frontend
+  template:
+    metadata:
+      labels:
+        app: castini-frontend
+    spec:
+      containers:
+        - name: castini-frontend
+          image: oussemaay/angular-nginx:v10
+          ports:
+            - containerPort: 80
+          env:
+            - name: URL
+              value: /castini
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: castini-frontend-ingress
+  namespace: castini
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: castini.com   # Change this to your actual domain or IP
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: castini-frontend-service
+                port:
+                  number: 80
+apiVersion: v1
+kind: Service
+metadata:
+  name: castini-frontend-service
+  namespace: castini
+spec:
+  selector:
+    app: castini-frontend
+  type: NodePort
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80          # Port inside the cluster (ClusterIP)
+      targetPort: 80    # Container port
+      nodePort: 30080   # External port on the node (must be between 30000–32767)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: castini-backend
+  namespace: castini
+  labels:
+    app: castini-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: castini-backend
+  template:
+    metadata:
+      labels:
+        app: castini-backend
+    spec:
+      containers:
+        - name: castini
+          image: oussemaay/backend:v9
+          ports:
+            - containerPort: 8089
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://10.110.134.150:3306/castiniIntegration?createDatabaseIfNotExist=true&serverTimezone=UTC
+            - name: SPRING_DATASOURCE_USERNAME
+              value: castini_user
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: secret
+apiVersion: v1
+kind: Service
+metadata:
+  name: castini-backend-service
+  namespace: castini
+spec:
+  selector:
+    app: castini-backend
+  ports:
+    - protocol: TCP
+      port: 8089       # Service port clients will use inside the cluster
+      targetPort: 8089 # Port exposed by the container
+  type: ClusterIP
+  clusterIP: 10.103.221.210
+
+
+cat: cloud-provider-openstack: Is a directory
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: castini
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.4
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root123
+            - name: MYSQL_USER
+              value: castini_user
+            - name: MYSQL_PASSWORD
+              value: secret
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  hostPath:
+    path: /mnt/data/mysql
+
+#apiVersion: v1 260402
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: mysql-pvc
+#  namespace: castini
+#spec:
+#  accessModes:
+#    - ReadWriteOnce
+#  resources:
+#    requests:
+#      storage: 5Gi
+#  storageClassName: local-storage
+#  volumeName: mysql-pv
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: castini
+spec:
+  selector:
+    app: mysql
+  type: ClusterIP
+  clusterIP: 10.104.22.59
+  ports:
+    - port: 3306
+      targetPort: 3306
+

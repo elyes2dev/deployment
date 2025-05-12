@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: castini-frontend
+  namespace: castini
+  labels:
+    app: castini-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: castini-frontend
+  template:
+    metadata:
+      labels:
+        app: castini-frontend
+    spec:
+      containers:
+        - name: castini-frontend
+          image: baraaabid33/hackatonnet-frontend:v7
+          ports:
+            - containerPort: 80

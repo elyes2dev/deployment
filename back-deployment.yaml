@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: baraaabid33/hackathonnet-backend:v2
+        image: shadow540/hack:v3
         ports:
         - containerPort: 9100
         env:

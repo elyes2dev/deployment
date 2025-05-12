@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: elyeshub/frontend-hack
+        image: elyeshub/frontend-hack:latest
         ports:
         - containerPort: 80
         env:
