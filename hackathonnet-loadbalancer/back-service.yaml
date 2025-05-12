@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hackathonnet-backend-service
+  namespace: hackathonnet
+spec:
+  selector:
+    app: hackathonnet-backend
+  ports:
+    - protocol: TCP
+      port: 8089       # Service port clients will use inside the cluster
+      targetPort: 8089 # Port exposed by the container
+  type: ClusterIP
+  clusterIP: 10.103.221.210
