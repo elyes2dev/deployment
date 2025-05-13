@@ -1,0 +1,48 @@
+curl -X POST http://10.103.221.210:8089/api/roles \
+  -H "Content-Type: application/json" \
+  -d '{"name":"student"}'
+
+
+
+curl -X POST http://10.103.221.210:8089/api/roles \
+  -H "Content-Type: application/json" \
+  -d '{"name":"admin"}'
+
+
+create student aa et bb (in application)
+
+curl http://10.103.221.210:8089/api/users
+
+copier lobject user aa
+
+curl -X PUT http://10.103.221.210:8089/api/users/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+  "id" : 1,
+  "name" : "aa",
+  "lastname" : "aa",
+  "email" : "aa",
+  "username" : "aa",
+  "password" : "$2a$10$sz/a5afE18N2fu5GEBB8U.m6XPPA2O32i.kwN8yqGDABNkAtu1KLi",
+  "birthdate" : "2025-05-24",
+  "picture" : "",
+  "description" : "aa",
+  "score" : 0,
+  "createdAt" : "2025-05-13T15:47:37.502+00:00",
+  "roles" : [ {
+    "id" : 2,
+    "name" : "admin"
+  } ],
+  "skills" : [ ],
+  "sponsorApplication" : null,
+  "sponsorReward" : null,
+  "userQuizScores" : [ ],
+  "monitorPoints" : 0,
+  "badge" : "JUNIOR_COACH",
+  "mentorPoints" : 0,
+  "authorities" : [ ],
+  "enabled" : true,
+  "accountNonExpired" : true,
+  "accountNonLocked" : true,
+  "credentialsNonExpired" : true
+}'
