@@ -20,6 +20,13 @@ kubectl wait --namespace metallb-system \
 echo "Applying MetalLB configuration..."
 kubectl apply -f metallb-config.yaml
 
+# Create PersistentVolume and PersistentVolumeClaim for MySQL
+echo "Creating PersistentVolume for MySQL..."
+kubectl apply -f mysql-pv.yaml
+
+echo "Creating PersistentVolumeClaim for MySQL..."
+kubectl apply -f mysql-pvc.yaml
+
 # Deploy MySQL
 echo "Deploying MySQL database..."
 kubectl apply -f mysql-deploy.yaml
