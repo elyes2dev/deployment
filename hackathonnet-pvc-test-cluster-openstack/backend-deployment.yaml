@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hackathonnet-backend
+  namespace: hackathonnet
+  labels:
+    app: hackathonnet-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hackathonnet-backend
+  template:
+    metadata:
+      labels:
+        app: hackathonnet-backend
+    spec:
+      containers:
+        - name: hackathonnet
+          image: elyeshub/springboot:v3
+          ports:
+            - containerPort: 8089
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://10.104.22.59:3306/pi111?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&maxAllowedPacket=67108864
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: ""

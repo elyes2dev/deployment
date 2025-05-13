@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hackathonnet-frontend
+  namespace: hackathonnet
+  labels:
+    app: hackathonnet-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hackathonnet-frontend
+  template:
+    metadata:
+      labels:
+        app: hackathonnet-frontend
+    spec:
+      containers:
+        - name: hackathonnet-frontend
+          image: baraaabid33/hackatonnet-frontend:v7
+          ports:
+            - containerPort: 80
