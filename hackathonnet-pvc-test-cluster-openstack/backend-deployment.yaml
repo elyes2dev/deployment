@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: hackathonnet
-          image: elyeshub/springboot:v3
+          image: elyeshub/hackathonnet-backend:v2  #springboot:v3
           ports:
             - containerPort: 8089
           env:

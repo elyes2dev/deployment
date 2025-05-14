@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
         - name: hackathonnet-frontend
-          image: baraaabid33/hackatonnet-frontend:v7
+          image: baraaabid33/hackatonnet-frontend:v8
           ports:
             - containerPort: 80
